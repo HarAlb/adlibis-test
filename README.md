@@ -7,60 +7,75 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# Adlibis Test Project
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Простое Laravel-приложение с Docker для локальной разработки.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Технологии:**
+- PHP 8.2
+- Laravel 11
+- MySQL 8
+- Nginx
+- Redis
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 1. Подготовка
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Клонируем репозиторий:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+```bash
+git clone https://github.com/HarAlb/adlibis-test
+cd adlibis-test
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+2. Убедитесь, что Docker и Docker Compose установлены.
+3. Добавьте домен в hosts:
 
-## Laravel Sponsors
+````bash
+127.0.0.1 adlibis-test-app.test
+````
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 2. Docker
 
-### Premium Partners
+Все сервисы используют кастомные имена контейнеров, чтобы не мешать другим проектам.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 2.1 Сервисы
 
-## Contributing
+    app — PHP-FPM контейнер (adlibis_laravel_app)
+    nginx — веб-сервер (adlibis_nginx)
+    db — MySQL 8 (adlibis_mysql_db)
+    redis — кеш (adlibis_redis)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 3. Настройка Laravel
 
-## Code of Conduct
+#### 3.1 Установите зависимости Composer:
+````bash
+docker exec -it adlibis_laravel_app composer install
+````
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### 3.2 Создайте .env:
+````bash
+docker exec -it adlibis_laravel_app cp .env.example .env
+````
+#### 3.3 Настройте .env для подключения к MySQL:
 
-## Security Vulnerabilities
+````bash
+DB_CONNECTION=mysql
+DB_HOST=adlibis_mysql_db
+DB_PORT=3306
+DB_DATABASE=highload_laravel
+DB_USERNAME=laravel
+DB_PASSWORD=secret
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+REDIS_HOST=adlibis_redis
+````
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### 3.4  Генерируем ключ приложения:
+````bash
+docker exec -it adlibis_laravel_app php artisan key:generate
+````
+#### 3.5. Миграции и сиды
+````bash
+docker exec -it adlibis_laravel_app php artisan migrate --seed
+````
