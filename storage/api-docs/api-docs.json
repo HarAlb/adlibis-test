@@ -1,0 +1,621 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Adlibis API Documentation",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://adlibis-test-app.test/api",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/articles": {
+            "get": {
+                "tags": [
+                    "Новости"
+                ],
+                "summary": "Список новостей",
+                "description": "Получение списка новостей с курсорной пагинацией",
+                "operationId": "f365c616074bc126aa966566bcc3c7d3",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/cursor"
+                    },
+                    {
+                        "$ref": "#/components/parameters/per_page"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ArticleCursorPaginateResponseWrapper"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/comments/{commentable_type}/{commentable_id}": {
+            "get": {
+                "tags": [
+                    "Комментарии"
+                ],
+                "summary": "Комментарии сущности",
+                "description": "Список комментариев к сущности (статья или пост) с пагинацией",
+                "operationId": "f6fff25b484436558d6563954022cbc7",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/cursor"
+                    },
+                    {
+                        "$ref": "#/components/parameters/commentable_type"
+                    },
+                    {
+                        "$ref": "#/components/parameters/commentable_id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/per_page"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommentPaginateResponseWrapper"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Комментарии"
+                ],
+                "summary": "Создание комментария",
+                "description": "Создание комментария к статье или публикации",
+                "operationId": "e19f7f67b26e8f3810ceacf79001ed1c",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/commentable_type"
+                    },
+                    {
+                        "$ref": "#/components/parameters/commentable_id"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCommentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Комментарий создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommentResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/comments/{id}/replies": {
+            "get": {
+                "tags": [
+                    "Комментарии"
+                ],
+                "summary": "Список ответов на комментарий",
+                "description": "Список ответов на комментарий",
+                "operationId": "53b4de8b9724edf6ba2bb8d6db263db6",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/cursor"
+                    },
+                    {
+                        "$ref": "#/components/parameters/id"
+                    },
+                    {
+                        "$ref": "#/components/parameters/per_page"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CommentPaginateResponseWrapper"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/posts": {
+            "get": {
+                "tags": [
+                    "Публикация"
+                ],
+                "summary": "Список публикаций",
+                "description": "Получение списка публикаций с курсорной пагинацией",
+                "operationId": "e1dc9d92794a6995b4ab5c513b6f1241",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/cursor"
+                    },
+                    {
+                        "$ref": "#/components/parameters/per_page"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostCursorPaginateResponseWrapper"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Публикация"
+                ],
+                "summary": "Создание публикации",
+                "description": "Создание новой публикации с видеофайлом",
+                "operationId": "cd62ae883339ae9c01a3f3b634c8bc15",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostResponseWrapper"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации данных"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "StoreCommentRequest": {
+                "required": [
+                    "commentable_type",
+                    "commentable_id",
+                    "body"
+                ],
+                "properties": {
+                    "parent_id": {
+                        "description": "ID родительского комментария (для ответа)",
+                        "type": "integer",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "body": {
+                        "description": "Текст комментария",
+                        "type": "string",
+                        "example": "Отличная статья!"
+                    }
+                },
+                "type": "object"
+            },
+            "StorePostRequest": {
+                "required": [
+                    "title",
+                    "content",
+                    "video"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255,
+                        "example": "Новая публикация"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Текст публикации"
+                    },
+                    "video": {
+                        "description": "Видео-файл публикации",
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            },
+            "ArticleResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 23
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "comments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CommentResponse"
+                        }
+                    },
+                    "comments_count": {
+                        "type": "integer",
+                        "example": 6
+                    }
+                },
+                "type": "object"
+            },
+            "AuthorResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 23
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CommentParentResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 334
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/AuthorResponse"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "replies_count": {
+                        "type": "integer",
+                        "example": 2
+                    }
+                },
+                "type": "object"
+            },
+            "CommentResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 334
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/AuthorResponse"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "replies_count": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "parent": {
+                        "$ref": "#/components/schemas/CommentParentResponse"
+                    }
+                },
+                "type": "object"
+            },
+            "CursorLinks": {
+                "properties": {
+                    "first": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "last": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "prev": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "next": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "CursorMeta": {
+                "properties": {
+                    "path": {
+                        "type": "string",
+                        "example": "/articles"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "next_cursor": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "prev_cursor": {
+                        "type": "string",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "MediaResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 23
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "video"
+                    },
+                    "size": {
+                        "type": "integer",
+                        "example": 117464,
+                        "nullable": true
+                    },
+                    "path": {
+                        "type": "string",
+                        "example": "videos/aGE0rxCqQh.mp4"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 23
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "published_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "comments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CommentResponse"
+                        }
+                    },
+                    "comments_count": {
+                        "type": "integer",
+                        "example": 6
+                    },
+                    "video": {
+                        "$ref": "#/components/schemas/MediaResponse"
+                    },
+                    "author": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/components/schemas/AuthorResponse"
+                            }
+                        ],
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ArticleCursorPaginateResponseWrapper": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ArticleResponse"
+                        }
+                    },
+                    "links": {
+                        "$ref": "#/components/schemas/CursorLinks"
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/CursorMeta"
+                    }
+                },
+                "type": "object"
+            },
+            "CommentPaginateResponseWrapper": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CommentResponse"
+                        }
+                    },
+                    "links": {
+                        "$ref": "#/components/schemas/CursorLinks"
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/CursorMeta"
+                    }
+                },
+                "type": "object"
+            },
+            "CommentResponseWrapper": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/CommentResponse"
+                    }
+                },
+                "type": "object"
+            },
+            "PostCursorPaginateResponseWrapper": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/PostResponse"
+                        }
+                    },
+                    "links": {
+                        "$ref": "#/components/schemas/CursorLinks"
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/CursorMeta"
+                    }
+                },
+                "type": "object"
+            },
+            "PostResponseWrapper": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/PostResponse"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "parameters": {
+            "commentable_id": {
+                "name": "commentable_id",
+                "in": "path",
+                "description": "Commentable Id",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                },
+                "example": 1
+            },
+            "commentable_type": {
+                "name": "commentable_type",
+                "in": "path",
+                "description": "commentable_type article|post",
+                "required": true,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "article"
+            },
+            "id": {
+                "name": "id",
+                "in": "path",
+                "description": "Id",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                },
+                "example": 1
+            },
+            "cursor": {
+                "name": "cursor",
+                "in": "query",
+                "description": "Cursor",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                },
+                "example": "eyJjcmVhdGVkX2F0IjoiMjAyNi0wMS0xNCAyMTowMzo1NyIsIl9wb2ludHNUb05leHRJdGVtcyI6dHJ1ZX0"
+            },
+            "per_page": {
+                "name": "per_page",
+                "in": "query",
+                "description": "Per Page",
+                "required": false,
+                "schema": {
+                    "type": "integer"
+                },
+                "example": 3
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Новости",
+            "description": "Новости"
+        },
+        {
+            "name": "Комментарии",
+            "description": "Комментарии"
+        },
+        {
+            "name": "Публикация",
+            "description": "Публикация"
+        }
+    ]
+}
